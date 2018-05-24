@@ -81,7 +81,7 @@ std::string getCompressedFilePath(const std::string& path_to_file)
 
 std::string getDecompressedFilePath(const std::string& path_to_file)
 {
-	return hfile::getParentDicrectory(path_to_file) +
+	return hfile::getParentDicrectory(path_to_file) + "d_" +
 	 	   hfile::getFileName(path_to_file) +
 	 	   hfile::getOriginalFileExtension(path_to_file);
 } 
