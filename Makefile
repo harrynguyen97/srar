@@ -1,6 +1,6 @@
 # Put your project's name right here
 # This will generate an execitive file whose name $(PROJECT_NAME)
-PROJ_NAME = main
+PROJ_NAME = srar
 
 CC = g++
 
