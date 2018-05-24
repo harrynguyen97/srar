@@ -7,6 +7,6 @@
 	* type "make"
 
 * **Usage:**
-	* For compression: srar -c '<path_to_file>' 
+	* For compression: srar -c `<path_to_file>` 
 	* For decompression: srar -d <path_to_file>	
 	* For more information: srar --help
