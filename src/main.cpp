@@ -41,6 +41,10 @@ int main(int argc, char* argv[])
 		   		std::cout << "Decompressed file path: "
 		   				  << getDecompressedFilePath(path_to_file) << std::endl; 
 		   	}
+		   	else {
+		   		std::cout << "Invalid option.\n";
+				std::cout << "Try 'srar --help' for more information.\n";
+		   	}
 		   	iFile.close();
 		}
 	   	else 
