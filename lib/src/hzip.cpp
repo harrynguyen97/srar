@@ -15,15 +15,14 @@ std::string stobyte(std::string& sBits)
 	* 0 will be filled. That's the purpose of "+ numberOfBits"
 	*/
 	for(std::size_t i = 0; i < sBits.size() + numberOfBits; ++i) {
-		if (sBits[i] == '0')
-			bit = 0;
-		else 
-			bit = 1;
+
+		// Convert character in form of binary to real bits.
+		(sBits[i] == '0') ? (bit = 0) : (bit = 1);
 
 		// Initialise byteChar once
 		static char byteChar = 0;
 
-		// then get 1 byte 
+		// then get 1 bit
 		byteChar = (byteChar << 1) | bit;
 
 		++numberOfBits;
@@ -54,7 +53,7 @@ HZip::buildFrequencyTable(const std::string& input)
    	for (std::size_t i = 0; i < input.size(); ++i)
    		++freqTable[hchar_t(input[i])]; // cast input[i] from char to hchar_t 
 
-   	// push a PSEDO_EOF with frequency 1
+   	// push a PSEDO_EOF to frequency table with freq = 1
    	freqTable[PSEUDO_EOF] = 1;
 
    	return freqTable;

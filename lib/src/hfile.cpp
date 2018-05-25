@@ -68,7 +68,7 @@ hfile::getOriginalFileExtension(const std::string& path_to_file)
 }
 
 void compress(std::ifstream& inFile, std::ofstream& outFile, 
-			  const std::string& path_to_file) 
+			  const std::string& path_to_file, const std::string& extension) 
 {
 	/* Read whole string in inFile 
 	*  and store to inDoc
@@ -92,7 +92,7 @@ void compress(std::ifstream& inFile, std::ofstream& outFile,
 	std::string encoded_file_path = hfile::getParentDicrectory(path_to_file) + 
 									hfile::getFileName(path_to_file) + 
 									hfile::getSourceFileExtension(path_to_file) +
-									h_extension::har;
+									extension;
 	
 	/* Write to outFile */
 	outFile.open(encoded_file_path, std::ios::binary);

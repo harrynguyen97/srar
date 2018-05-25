@@ -31,8 +31,8 @@ const hchar_t NOT_A_CHAR = 257; // Write to internal nodes
 const bit_t MAX_NUMBER_OF_BITS = 8; 
 
 /* Convert string of bits ( "0" or "1") 
-* to real byte 
-* Return converted bytes in the form of strings
+*  to real byte 
+*  Return converted bytes in the form of strings
 */
 std::string stobyte(std::string& sBits);
 
@@ -58,7 +58,7 @@ struct NODE
 	}
 };
 
-// ADT to implement min heap
+// ADT for min heap implementation
 struct Comparator
 {
 	bool operator()(NODE* lChild, NODE* rChild) 
@@ -73,47 +73,53 @@ public:
 	HZip();
 
 	/*
-	* Build a frequency table 
-	* and return a frequency map
+	* Build a frequency table from input string
+	* and return a frequency map.
 	*/
 	frmap_t buildFrequencyTable(const std::string& input);
 
 	/* 
-	* Build a Huffman tree 
-	* and return the root
+	* Build a Huffman tree from frequency table
+	* and return the root.
 	*/
 	NODE* buildEncodingTree(frmap_t freqTable);
 
 	/*
-	* Get encoded map 
-	* value is string of binary code corresponding to each char
+	* Get encoded map from the root of encoded tree
+	* and return encoded map.
 	*/
 	hmap_t getEncodedMap(NODE* encodingTree);
 	
 	/*
-	* Read character from input string 
-	* and write bytes to output for compression
+	* Read characters from input string 
+	* and write bytes to output.
+	* -------------------------------------
+	* Used for compression
 	*/
 	void encodeData(std::string& input, const frmap_t freqMap, 
 					hmap_t encodedMap, std::string& output);
 
 	/*
 	* Construct frequency table from the header 
-	* in the input string
+	* of the input string.
+	* ------------------------------------------
+	* Used for decompression
 	*/
 	frmap_t headerProcessing(std::string& input);
 
 	/*
 	* Read bits by bits from the input string
 	* and write character to the output.
-	* For decompression
+	* ----------------------------------------
+	* Used for decompression
 	*/
 	void decodeData(std::string& input, NODE* encodingTree, std::string& output);
 
 protected:
-	/* Protected member */
 	/*
-	* Build huffman encoding mao recursively
+	* Build Huffman encoding map.
+	* ----------------------------
+	* Recursive approach.
 	*/
 	void buildEncodingMap(NODE* encodingTree, std::string sCode);
 

@@ -12,6 +12,9 @@ namespace h_extension {
 	const std::string hzip = ".hzip";
 	const std::string har = ".har";
 	const std::string tom = ".tom";
+	const std::string peter = ".peter";
+	const std::string harry = ".harry";
+	const std::string ngochoa = ".ngochoa";
 }
 
 /*
@@ -44,7 +47,7 @@ namespace hfile {
 *  path_to_file is used for constructing the path to compressed file
 */
 void compress(std::ifstream& inFile, std::ofstream& outFile, 
-			  const std::string& path_to_file);
+			  const std::string& path_to_file, const std::string extension);
 
 /* Decompress inFile and write to outFile 
 *  -------------------------------------------------------------------
