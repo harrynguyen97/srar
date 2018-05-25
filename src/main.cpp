@@ -7,7 +7,8 @@
 
 using namespace std;
 
-std::string getCompressedFilePath(const std::string& path_to_file);
+std::string getCompressedFilePath(const std::string& path_to_file, 
+								  const std::string& extension);
 std::string getDecompressedFilePath(const std::string& path_to_file);
 void help();
 
@@ -24,12 +25,13 @@ int main(int argc, char* argv[])
 		   	if (option == "-c") {
 		   		std::cout << "Compressing...\n";
 		   		ofstream encodedFile;
-		   		compress(iFile, encodedFile, path_to_file);
+		   		compress(iFile, encodedFile, path_to_file, h_extension::tom);
 		   		encodedFile.close();
 		   		std::cout << "Finished.\n";
 
 		   		std::cout << "Compressed file path: "
-		   		          << getCompressedFilePath(path_to_file) << std::endl;
+		   		          << getCompressedFilePath(path_to_file, h_extension::tom) 
+		   		          << std::endl;
 		   	}
 		   	else if (option == "-d") {
 		   		std::cout << "Decompressing...\n";
@@ -71,12 +73,13 @@ void help()
 	std::cout << "For showing this messsage: srar --help\n";
 }
 
-std::string getCompressedFilePath(const std::string& path_to_file)
+std::string getCompressedFilePath(const std::string& path_to_file, 
+								  const std::string& extension)
 {
 	return hfile::getParentDicrectory(path_to_file) +
 		   hfile::getFileName(path_to_file) +
 		   hfile::getSourceFileExtension(path_to_file) +
-		   h_extension::har;
+		   extension;
 }
 
 std::string getDecompressedFilePath(const std::string& path_to_file)
