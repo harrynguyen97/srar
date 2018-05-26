@@ -7,7 +7,7 @@ hfile::getFileName(const std::string& path_to_file)
 
 	/* In case there is no parent directory at all */
 	if (path_to_file.find_last_of("/") != std::string::npos) 
-		start = path_to_file.find_last_of("/@") + 1;
+		start = path_to_file.find_last_of("/") + 1;
 	else 
 		start = 0;
 	
@@ -182,10 +182,22 @@ joinFile(const std::ifstream& inFile_1, const std::ifstream& inFile_2,
  	// Join 2 strings
  	std::string outDoc = inDoc_1 + inDoc_2;
 
+ 	// Get raw file name (still contains "h@" and "d@")
+ 	std::string source_file_name = hfile::getFileName(source_file_path);
+
+ 	/* Remove "h@" or "d@" for getting actual file name */
+ 	std::size_t start = source_file_name.find_first_of("@") + 1;
+ 	std::size_t end = source_file_name.size();
+ 	std::string joined_file_name = source_file_name.substr(start, end - start);
+ 
+ 	/* joined_file_path = dest_dir + source_file_name + 
+ 	*					  original_source_file_extension + srar_extension 
+ 	*/
  	std::string joined_file_path = hfile::getParentDicrectory(dest_file_path) + 
- 								   hfile::getFileName(source_file_path) + 
+ 								   joined_file_name + 
  								   hfile::getOriginalFileExtension(source_file_path) +
  								   hfile::getSrarExtension(source_file_path);
+
  	/* Write joined string to dest_file_path */
  	outFile.open(joined_file_path, std::ios::binary);
 	outFile << outDoc;
