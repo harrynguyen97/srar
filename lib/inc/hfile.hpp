@@ -7,6 +7,9 @@
 #include <sstream>
 #include <string>
 
+const unsigned char HEADER = 0;
+const unsigned char ACTUAL_COMPRESSED_DATA = 1;
+
 /* Namespace for file extensions */
 namespace h_extension {
 	const std::string hzip = ".hzip";
@@ -14,7 +17,6 @@ namespace h_extension {
 	const std::string tom = ".tom";
 	const std::string peter = ".peter";
 	const std::string harry = ".harry";
-	const std::string ngochoa = ".ngochoa";
 }
 
 /*
@@ -40,20 +42,40 @@ namespace hfile {
 	* Used for constructing the path to decompressed file
 	*/ 
 	std::string getOriginalFileExtension(const std::string& path_to_file);
+
+	std::string getSrarExtension(const std::string& path_to_file);
 }
 
-/* Compress inFile and write to outFile
-*  ------------------------------------------------------------------
-*  path_to_file is used for constructing the path to compressed file
+/* Compress inFile and split into 2 files: 
+*          the header and actual compressed file.
+*  ---------------------------------------------------
+*  dest_file_path is the path to the directory you want to write 
+*  your compressed file to, no need to include file name.
 */
-void compress(std::ifstream& inFile, std::ofstream& outFile, 
-			  const std::string& path_to_file, const std::string extension);
+void compress(const std::ifstream& inFile, 
+			  std::ofstream& outHeaderFile, std::ofstream& outDataFile, 
+			  const std::string& source_file_path, 
+			  const std::string& dest_file_path,  
+			  const std::string& extension);
+
+
+/* Join 2 files inFile_1 and inFile_2 and write to outFile.
+*  -----------------------------------------------------------------------
+*  dest_file_path must include file name you want to create after joining
+*/
+void joinFile(const std::ifstream& inFile_1, const std::ifstream& inFile_2, 
+			  std::ofstream& outFile, 
+			  const std::string& source_file_path,
+			  const std::string& dest_file_path);
+
 
 /* Decompress inFile and write to outFile 
 *  -------------------------------------------------------------------
-*  path_to_file is used for constructing the path to decompressed file
+*  dest_file_path is the path to the directory you want to write 
+*  your compressed file to, no need to include file name.
 */
-void decompress(std::ifstream& inFile, std::ofstream& outFile, 
-				const std::string& path_to_file);
+void decompress(const std::ifstream& inFile, std::ofstream& outFile, 
+				const std::string& source_file_path, 
+				const std::string& dest_file_path);
 
 #endif

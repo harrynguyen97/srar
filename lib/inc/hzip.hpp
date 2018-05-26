@@ -97,7 +97,7 @@ public:
 	* Used for compression
 	*/
 	void encodeData(std::string& input, const frmap_t freqMap, 
-					hmap_t encodedMap, std::string& output);
+					hmap_t encodedMap, std::vector<std::string>& output);
 
 	/*
 	* Construct frequency table from the header 

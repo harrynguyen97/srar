@@ -125,7 +125,7 @@ HZip::getEncodedMap(NODE* encodingTree)
 
 void
 HZip::encodeData(std::string& input, const frmap_t freqMap, 
-				 hmap_t encodedMap, std::string& output)
+				 hmap_t encodedMap, std::vector<std::string>& output)
 {
 	/*
 	* Construct the header 
@@ -147,8 +147,9 @@ HZip::encodeData(std::string& input, const frmap_t freqMap,
 	// Put a PSEUDO_EOF at the end of the input string
 	sBits += encodedMap[PSEUDO_EOF];
 
-	// Output = header + byte of string bits from huffman code
-	output = header + stobyte(sBits);
+	// Vector output contains 2 parts: the header and actual compressed data
+	output.push_back(header);
+	output.push_back(stobyte(sBits));
 }
 
 frmap_t

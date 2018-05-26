@@ -4,61 +4,93 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <map>
 
 using namespace std;
 
-std::string getCompressedFilePath(const std::string& path_to_file, 
-								  const std::string& extension);
-std::string getDecompressedFilePath(const std::string& path_to_file);
 void help();
 
 int main(int argc, char* argv[])
 {
-	std::string option = argv[1];
-	if (argc == 3) {
+	if (argc > 1 && argc <= 5) {
+		std::string option = argv[1];
 
-		std::string path_to_file = argv[2];
-		ifstream iFile;
-		iFile.open(path_to_file);
+		if (option == "-c") {
+			std::string source_file_path = argv[2];
+			std::string dest_file_path = argv[3];
 
-		if (iFile.is_open()) {
-		   	if (option == "-c") {
-		   		std::cout << "Compressing...\n";
-		   		ofstream encodedFile;
-		   		compress(iFile, encodedFile, path_to_file, h_extension::tom);
-		   		encodedFile.close();
-		   		std::cout << "Finished.\n";
+			ifstream inFile;
+			inFile.open(source_file_path);
 
-		   		std::cout << "Compressed file path: "
-		   		          << getCompressedFilePath(path_to_file, h_extension::tom) 
-		   		          << std::endl;
-		   	}
-		   	else if (option == "-d") {
-		   		std::cout << "Decompressing...\n";
-		   		ofstream decodedFile;
-		   		decompress(iFile, decodedFile, path_to_file);
-		   		decodedFile.close();
-		   		std::cout << "Finished.\n";
-
-		   		std::cout << "Decompressed file path: "
-		   				  << getDecompressedFilePath(path_to_file) << std::endl; 
-		   	}
-		   	else {
-		   		std::cout << "Invalid option.\n";
-				std::cout << "Try 'srar --help' for more information.\n";
-		   	}
-		   	iFile.close();
+			ofstream headerFile;
+			ofstream dataFile;
+			
+			std::cout << "Compressing [" << source_file_path << "]...\n";
+			compress(inFile, headerFile, dataFile, 
+					 source_file_path, dest_file_path, h_extension::har);
+			std::cout << "Finished.\n";
+			std::cout << "Saved at: " << dest_file_path << std::endl;
+			inFile.close();
+			headerFile.close();
+			dataFile.close();
 		}
-	   	else 
-	   		std::cout << "Error in opening specified file.\n";
-	}
-	else if (argc == 2 && option == "--help") 
-		help();
 
-	else {
-		std::cout << "Invalid option.\n";
-		std::cout << "Try 'srar --help' for more information.\n";
+		else if (option == "-j") {
+			std::string header_file_path = argv[2];
+			std::string data_file_path = argv[3];
+
+			std::string dest_file_path = argv[4];
+
+			ifstream headerFile;
+			headerFile.open(header_file_path);
+
+			ifstream dataFile;
+			dataFile.open(data_file_path);
+
+			ofstream joinedFile;
+			std::cout << "Joining 2 files "
+					  << "[" << header_file_path << "] + [" << data_file_path << "]...\n";
+			joinFile(headerFile, dataFile, joinedFile, header_file_path, dest_file_path);
+			std::cout << "Finished.\n";
+
+			std::cout << "Saved at: " << dest_file_path << std::endl;
+			headerFile.close();
+			dataFile.close();
+			joinedFile.close();
+		}
+
+		else if (option == "-d") {
+			std::string source_file_path = argv[2];
+			std::string dest_file_path = argv[3];
+
+			ifstream inFile;
+			inFile.open(source_file_path);
+
+			ofstream decompressedFile;
+
+			std::cout << "Decompressing [" << source_file_path << "]...\n";
+			decompress(inFile, decompressedFile, source_file_path, dest_file_path);
+			std::cout << "Finished.\n";
+			std::cout << "Saved at: " << dest_file_path << std::endl;
+			inFile.close();
+			decompressedFile.close();
+		}
+
+		else if (option == "--help") {
+			help();
+		}
+
+		else {
+			std::cout << "Invalid option.\n";
+			std::cout << "Try \"--help\" for more info.\n";
+		} 
 	}
+	
+	else {
+		std::cout << "Not enough or too many arguments.\n";
+		std::cout << "Try \"--help\" for more info.\n";
+	}
+	
 	return EXIT_SUCCESS;
 }
 
@@ -72,19 +104,3 @@ void help()
 	std::cout << "For decompression: srar -d <path_to_file>\n";
 	std::cout << "For showing this messsage: srar --help\n";
 }
-
-std::string getCompressedFilePath(const std::string& path_to_file, 
-								  const std::string& extension)
-{
-	return hfile::getParentDicrectory(path_to_file) +
-		   hfile::getFileName(path_to_file) +
-		   hfile::getSourceFileExtension(path_to_file) +
-		   extension;
-}
-
-std::string getDecompressedFilePath(const std::string& path_to_file)
-{
-	return hfile::getParentDicrectory(path_to_file) + "d_" +
-	 	   hfile::getFileName(path_to_file) +
-	 	   hfile::getOriginalFileExtension(path_to_file);
-} 

@@ -7,7 +7,7 @@ hfile::getFileName(const std::string& path_to_file)
 
 	/* In case there is no parent directory at all */
 	if (path_to_file.find_last_of("/") != std::string::npos) 
-		start = path_to_file.find_last_of("/") + 1;
+		start = path_to_file.find_last_of("/@") + 1;
 	else 
 		start = 0;
 	
@@ -67,8 +67,22 @@ hfile::getOriginalFileExtension(const std::string& path_to_file)
 	return original_file_extension;
 }
 
-void compress(std::ifstream& inFile, std::ofstream& outFile, 
-			  const std::string& path_to_file, const std::string& extension) 
+std::string 
+hfile::getSrarExtension(const std::string& path_to_file)
+{
+	std::size_t start = path_to_file.find_last_of(".");
+	std::size_t end = path_to_file.size();
+
+	std::string srarExtension = path_to_file.substr(start, end - start);
+
+	return srarExtension;
+}
+
+void compress(const std::ifstream& inFile, 
+			  std::ofstream& outHeaderFile, std::ofstream& outDataFile, 
+			  const std::string& source_file_path, 
+			  const std::string& dest_file_path, 
+			  const std::string& extension) 
 {
 	/* Read whole string in inFile 
 	*  and store to inDoc
@@ -83,24 +97,41 @@ void compress(std::ifstream& inFile, std::ofstream& outFile,
 	NODE* root = haz.buildEncodingTree(freqMap);
 	hmap_t encodedMap = haz.getEncodedMap(root);
 
-	std::string encodedDoc;
-	haz.encodeData(inDoc, freqMap, encodedMap, encodedDoc);
+	// data vector contains header and actual compressed data
+	std::vector<std::string> data;
 
-	/* Construct the path of compressed file
-	*  encoded_file_path = dir_path + filename + file_extension + huffman_extension
+	haz.encodeData(inDoc, freqMap, encodedMap, data);
+
+	/* Construct the path of header file
+	*  header_file_path = dest_dir_path + "h@"+ source_filename + 
+	*                     source_file_extension + huffman_extension
 	*/
-	std::string encoded_file_path = hfile::getParentDicrectory(path_to_file) + 
-									hfile::getFileName(path_to_file) + 
-									hfile::getSourceFileExtension(path_to_file) +
-									extension;
+	std::string header_file_path = hfile::getParentDicrectory(dest_file_path) + "h@" +
+								   hfile::getFileName(source_file_path) + 
+								   hfile::getSourceFileExtension(source_file_path) +
+								   extension;
 	
-	/* Write to outFile */
-	outFile.open(encoded_file_path, std::ios::binary);
-	outFile << encodedDoc;
+	/* Write to header file */
+	outHeaderFile.open(header_file_path, std::ios::binary);
+	outHeaderFile << data[HEADER];
+
+	/* Construct the path of actual compressed data file
+	*  similar to header_file_path, except for "d@" + filename instead of "h@"
+	*/
+	std::string data_file_path = hfile::getParentDicrectory(dest_file_path) + "d@" +
+								 hfile::getFileName(source_file_path) + 
+								 hfile::getSourceFileExtension(source_file_path) +
+								 extension;
+
+	/* Write to actual compressed file */
+	outDataFile.open(data_file_path, std::ios::binary);
+	outDataFile << data[ACTUAL_COMPRESSED_DATA];
 }
 
-void decompress(std::ifstream& inFile, std::ofstream& outFile, 
-				const std::string& path_to_file)
+void 
+decompress(const std::ifstream& inFile, std::ofstream& outFile, 
+		   const std::string& source_file_path,
+		   const std::string& dest_file_path)
 {
 	/* Read whole string in inFile 
 	*  and store to inDoc
@@ -114,22 +145,48 @@ void decompress(std::ifstream& inFile, std::ofstream& outFile,
 	frmap_t freqTable = haz.headerProcessing(inDoc);
 	NODE* root = haz.buildEncodingTree(freqTable);
 
-	std::string decodedDoc;
-	haz.decodeData(inDoc, root, decodedDoc);
+	std::string decompressedDoc;
+	haz.decodeData(inDoc, root, decompressedDoc);
 
-	// Free allocated memory
+	// Free allocated root
 	delete root;
 	
 	/* Construct the path of decompressed file
-	*  decoded_file_path = dir_path + d_<filename> + originalfile_extension
+	*  decompressed_file_path = dest_dir_path + <filename> + source_originalfile_extension
 	*/
-	std::string decoded_file_path = hfile::getParentDicrectory(path_to_file) + 
-									"d_" + 
-									hfile::getFileName(path_to_file) + 
-									hfile::getOriginalFileExtension(path_to_file);
+	std::string decompressed_file_path = hfile::getParentDicrectory(dest_file_path) + 
+										 hfile::getFileName(source_file_path) + 
+										 hfile::getOriginalFileExtension(source_file_path);
 
 	/* Write to outFile */
-	outFile.open(decoded_file_path, std::ios::binary);
-	outFile << decodedDoc;
+	outFile.open(decompressed_file_path, std::ios::binary);
+	outFile << decompressedDoc;
+}
 
+void 
+joinFile(const std::ifstream& inFile_1, const std::ifstream& inFile_2, 
+		 std::ofstream& outFile, 
+		 const std::string& source_file_path,
+		 const std::string& dest_file_path)
+{
+	/* Read whole inFile_1 and store to string inDoc_1 */
+	std::stringstream buf1;
+	buf1 << inFile_1.rdbuf();
+ 	std::string inDoc_1 = buf1.str();
+
+ 	/* Read whole inFile_2 and store to string inDoc_2 */
+ 	std::stringstream buf2;
+	buf2 << inFile_2.rdbuf();
+ 	std::string inDoc_2 = buf2.str();
+
+ 	// Join 2 strings
+ 	std::string outDoc = inDoc_1 + inDoc_2;
+
+ 	std::string joined_file_path = hfile::getParentDicrectory(dest_file_path) + 
+ 								   hfile::getFileName(source_file_path) + 
+ 								   hfile::getOriginalFileExtension(source_file_path) +
+ 								   hfile::getSrarExtension(source_file_path);
+ 	/* Write joined string to dest_file_path */
+ 	outFile.open(joined_file_path, std::ios::binary);
+	outFile << outDoc;
 }
