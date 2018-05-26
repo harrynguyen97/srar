@@ -100,7 +100,8 @@ void help()
 	std::cout << "Version: SRAR v1.0\n";
 	std::cout << "Hello from 2018.\n\n";
 	std::cout << "USAGE: \n";
-	std::cout << "For compression: srar -c <path_to_file>\n";
-	std::cout << "For decompression: srar -d <path_to_file>\n";
+	std::cout << "For compression: srar -c <path_to_raw_file> <path_to_dir>\n";
+	std::cout << "For decompression: srar -d <path_to_raw_file> <path_to_dir>\n";
+	std::cout << "For joining 2 files: srar -j <path_to_first_file> <path_to_second_file> <path_to_dir>\n";
 	std::cout << "For showing this messsage: srar --help\n";
 }
