@@ -8,7 +8,7 @@
 
 * **Installation:**
 	* cd to the directory contains the project
-	* type "make"
+	* type `make`
 
 * **Usage:**
 	* `srar [OPTION] SOURCE ... DEST`
