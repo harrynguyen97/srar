@@ -1,9 +1,9 @@
 **SRAR v1.0** 
 ------------------------------------------------------------------------
-*This is an encrypt/descrypt application using Huffman Coding Algorithm*
+*This is an compress/decompress application using Huffman Coding Algorithm*
 
 **Description:**
-*By using Huffman Coding Algorithm, the encrypted file will contain the header (which can be used for decryption) and the actual encrypted data. This application will export 2 files: 1 contains the header, and the other contains the encrypted data. Hackers will have to have both 2 files for decrypting your data. So of course, as long as you carefully seperate 2 files, your data is encrypted safely (at least I think).*
+*The compressed file will be devided into 2 files: 1 header and 1 actual compressed content. You should join them when decompressing*
 
 
 * **Installation:**
