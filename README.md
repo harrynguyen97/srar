@@ -17,3 +17,6 @@
 		* -d: decompression
 
 		* --help: display usage 
+
+## TODO LIST
+[ ] Fix this README
