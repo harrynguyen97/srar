@@ -1,3 +1,5 @@
+/* [TODO] add comments for this main file */
+
 #include "hzip.hpp"
 #include "hfile.hpp"
 

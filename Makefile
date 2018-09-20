@@ -1,4 +1,4 @@
-NAME = srar # Your project's name
+NAME = main # Your project's name
 
 # Select language 
 # LANG = c
