@@ -35,8 +35,8 @@ DIRS = bin inc src doc build data
 
 all: bin/$(BIN)
 
-# Compile object files
-class: $(OBJECTS)
+# Compile object files from .cpp files except for main.cpp
+objects: $(OBJECTS)
 
 # Generate header dependencies
 -include $(DEPS)
